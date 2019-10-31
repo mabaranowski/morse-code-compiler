@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private Recorder recorder = new Recorder();
+    private Converter converter = new Converter();
 
     private Button recordButton;
 
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
                 recordButton.setText("Stop recording");
             } else {
                 recordButton.setText("Start recording");
+                converter.convert(recorder.getQuinaryExpression());
+
             }
             mStartRecording = !mStartRecording;
         }

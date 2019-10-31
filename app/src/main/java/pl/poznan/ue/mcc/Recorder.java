@@ -18,6 +18,7 @@ public class Recorder extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
+    private String quinaryExpression;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -60,10 +61,21 @@ public class Recorder extends AppCompatActivity {
 
     private void stopRecording() {
         recordRunnable.setShouldRun(false);
+
+        //This is temporary hack. Need to synchronize threads.
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        quinaryExpression = recordRunnable.getQuinaryExpression();
         recorder.stop();
         recorder.release();
         recorder = null;
     }
 
-
+    public String getQuinaryExpression() {
+        return quinaryExpression;
+    }
 }
