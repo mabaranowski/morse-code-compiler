@@ -1,5 +1,6 @@
 package pl.poznan.ue.mcc;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -13,11 +14,6 @@ public class Dictionary {
 
     public Dictionary() {
         DataAccess dataAccess = new DataAccess();
-        try {
-            dataAccess.readFile("codes.csv");
-        } catch (IOException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
         this.dictionaryMap = dataAccess.getData();
     }
 

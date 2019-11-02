@@ -14,6 +14,15 @@ public class DataAccess extends Application {
 
     private Map<String, String> data;
 
+    public void onCreate() {
+        super.onCreate();
+        try {
+            readFile("codes.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void readFile(String file) throws IOException {
         InputStream is = getApplicationContext().getAssets().open(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
