@@ -2,6 +2,7 @@ package pl.poznan.ue.mcc;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 recordButton.setText("Stop recording");
             } else {
                 recordButton.setText("Start recording");
-                converter.convert(recorder.getQuinaryExpression());
-
+                String text = converter.convert(recorder.getQuinaryExpression());
+                Log.e(LOG_TAG, text);
             }
             mStartRecording = !mStartRecording;
         }

@@ -1,7 +1,6 @@
 package pl.poznan.ue.mcc;
 
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.app.Application;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,29 +8,32 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-public class TranslatorAccess {
-    String file = "codes.csv";
-    String key;
-    String value;
+public class DataAccess extends Application {
 
-    Map<String,String> translation;
+    private static final String LOG_TAG = "DataAccess";
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private void readFile() throws IOException {
+    private Map<String, String> data;
+
+    public void readFile(String file) throws IOException {
         InputStream is = getApplicationContext().getAssets().open(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         String line = br.readLine();
         while(line != null) {
             String[] l = line.split(";");
-            key = l[0];
-            value = l[1];
+            String key = l[0];
+            String value = l[1];
 
-            translation.put(key, value);
+            data.put(key, value);
             line = br.readLine();
         }
 
         br.close();
         is.close();
     }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
 }
