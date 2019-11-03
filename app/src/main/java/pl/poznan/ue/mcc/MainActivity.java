@@ -1,6 +1,7 @@
 package pl.poznan.ue.mcc;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,11 +16,10 @@ public class MainActivity extends AppCompatActivity {
 
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private static Context context;
     private Recorder recorder = new Recorder();
-    private Converter converter = new Converter();
 
     private Button recordButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
         setContentView(R.layout.activity_main);
         findById();
-
+        context = getApplicationContext();
         recordButton.setOnClickListener(changeRecordingState);
     }
 
@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
                 recordButton.setText("Stop recording");
             } else {
                 recordButton.setText("Start recording");
+                Converter converter = new Converter();
+
+                //Convert Test
                 String text = converter.convert(recorder.getQuinaryExpression());
                 Log.e(LOG_TAG, text);
             }
@@ -50,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void findById() {
         recordButton = findViewById(R.id.recordButton);
+    }
+
+    public static Context getGlobalContext() {
+        return context;
     }
 }
 

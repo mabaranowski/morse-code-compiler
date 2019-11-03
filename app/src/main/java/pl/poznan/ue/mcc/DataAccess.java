@@ -1,30 +1,29 @@
 package pl.poznan.ue.mcc;
 
-import android.app.Application;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 
-public class DataAccess extends Application {
+public class DataAccess {
 
     private static final String LOG_TAG = "DataAccess";
 
     private Map<String, String> data;
 
-    public void onCreate() {
-        super.onCreate();
+    public DataAccess(String file) {
         try {
-            readFile("codes.csv");
+            this.data = readFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void readFile(String file) throws IOException {
-        InputStream is = getApplicationContext().getAssets().open(file);
+    private Map<String, String> readFile(String file) throws IOException {
+        Map<String, String> data = new HashMap<>();
+        InputStream is = MainActivity.getGlobalContext().getAssets().open(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         String line = br.readLine();
@@ -39,10 +38,11 @@ public class DataAccess extends Application {
 
         br.close();
         is.close();
+
+        return data;
     }
 
     public Map<String, String> getData() {
         return data;
     }
-
 }
