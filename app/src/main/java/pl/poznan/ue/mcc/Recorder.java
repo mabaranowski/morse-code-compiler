@@ -20,17 +20,15 @@ public class Recorder extends AppCompatActivity {
 
     private String quinaryExpression;
 
-    static final Object LOCK = new Object();
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
+        switch (requestCode){
             case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!permissionToRecordAccepted) finish();
+        if (!permissionToRecordAccepted ) finish();
 
     }
 
@@ -64,14 +62,11 @@ public class Recorder extends AppCompatActivity {
     private void stopRecording() {
         recordRunnable.setShouldRun(false);
 
-        while (recordRunnable.isRunning()) {
-            synchronized (LOCK) {
-                try {
-                    LOCK.wait();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+        //This is temporary hack. Need to synchronize threads.
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         quinaryExpression = recordRunnable.getQuinaryExpression();
