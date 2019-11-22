@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,11 +15,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MainActivity";
 
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static Context context;
     private Recorder recorder = new Recorder();
 
+    static TextView textArea;
     private Button recordButton;
 
     @Override
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void findById() {
         recordButton = findViewById(R.id.recordButton);
+        textArea = findViewById(R.id.textArea);
     }
 
     public static Context getGlobalContext() {
