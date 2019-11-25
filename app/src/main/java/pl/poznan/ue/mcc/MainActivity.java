@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     static TextView textArea;
     private Button recordButton;
+    private Button sendButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         findById();
         context = getApplicationContext();
         recordButton.setOnClickListener(changeRecordingState);
+        sendButton.setOnClickListener(sendText);
     }
 
     private View.OnClickListener changeRecordingState = new View.OnClickListener() {
@@ -47,14 +49,24 @@ public class MainActivity extends AppCompatActivity {
 
                 //Convert Test
                 String text = converter.convert(recorder.getQuinaryExpression());
+                sendButton.setVisibility(View.VISIBLE);
                 Log.e(LOG_TAG, text);
             }
             mStartRecording = !mStartRecording;
         }
     };
 
+
+    private View.OnClickListener sendText = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
     private void findById() {
         recordButton = findViewById(R.id.recordButton);
+        sendButton = findViewById(R.id.sendButton);
         textArea = findViewById(R.id.textArea);
     }
 
