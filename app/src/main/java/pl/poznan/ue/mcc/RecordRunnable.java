@@ -21,6 +21,10 @@ public class RecordRunnable implements Runnable {
     private Boolean isWord;
     private Boolean isRunning;
 
+    private int ampLowerTh;
+    private int ampHigherTh;
+    private int samplingMs;
+
     public RecordRunnable(MediaRecorder recorder) {
         this.recorder = recorder;
         this.shouldRun = true;
@@ -28,6 +32,9 @@ public class RecordRunnable implements Runnable {
         this.isLetter = false;
         this.isWord = false;
         this.isRunning = false;
+        this.ampLowerTh = 500;
+        this.ampHigherTh = 2000;
+        this.samplingMs = 100;
     }
 
     public void run() {
@@ -43,13 +50,13 @@ public class RecordRunnable implements Runnable {
             }
 
             int amp = recorder.getMaxAmplitude();
-            if (amp > 500 && amp < 2000) {
+            if (amp > ampLowerTh && amp < ampHigherTh) {
                 appendSeparators(sb);
                 spaceCounter = 0;
 
                 sb.append(DOT);
                 Log.i(LOG_TAG, amp + "");
-            } else if (amp >= 2000) {
+            } else if (amp >= ampHigherTh) {
                 appendSeparators(sb);
                 spaceCounter = 0;
 
@@ -71,7 +78,7 @@ public class RecordRunnable implements Runnable {
             MainActivity.textArea.setText(converter.convert(sb.toString()));
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(samplingMs);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -88,6 +95,12 @@ public class RecordRunnable implements Runnable {
             }
         }
     }
+
+    public void setAmpLowerTh(int inputLowerTh) {this.ampLowerTh = inputLowerTh;}
+
+    public void setAmpHigherTh(int inputHigherTh) {this.ampHigherTh = inputHigherTh;}
+
+    public void setSamplingMs(int inputSamplingMs) {this.samplingMs = inputSamplingMs;}
 
     public void setShouldRun(Boolean shouldRun) {
         this.shouldRun = shouldRun;

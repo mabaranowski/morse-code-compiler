@@ -2,11 +2,13 @@ package pl.poznan.ue.mcc;
 
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Recorder extends AppCompatActivity {
@@ -19,6 +21,10 @@ public class Recorder extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     private String quinaryExpression;
+
+    private int ampLower;
+    private int ampHigher;
+    private int ms;
 
     static final Object LOCK = new Object();
 
@@ -57,6 +63,10 @@ public class Recorder extends AppCompatActivity {
         recorder.start();
 
         recordRunnable = new RecordRunnable(recorder);
+        recordRunnable.setAmpLowerTh(ampLower);
+        recordRunnable.setAmpHigherTh(ampHigher);
+        recordRunnable.setSamplingMs(ms);
+
         Thread recordThread = new Thread(recordRunnable);
         recordThread.start();
     }
@@ -79,6 +89,10 @@ public class Recorder extends AppCompatActivity {
         recorder.release();
         recorder = null;
     }
+
+    public void setLAmpTh(int th) {ampLower=th;}
+    public void setHrAmpTh(int th) {ampHigher=th;}
+    public void setSamplMs(int th) {ms=th;}
 
     public String getQuinaryExpression() {
         return quinaryExpression;

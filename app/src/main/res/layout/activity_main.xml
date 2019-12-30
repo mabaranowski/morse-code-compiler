@@ -8,8 +8,8 @@
 
     <Button
         android:id="@+id/recordButton"
-        android:layout_width="229dp"
-        android:layout_height="89dp"
+        android:layout_width="350dp"
+        android:layout_height="100dp"
         android:text="Start recording"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,4 +51,75 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recordButton"
         app:layout_constraintVertical_bias="0.496" />
+
+    <SeekBar
+        android:id="@+id/seekBarLowAmp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textLowerAmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lower Amplitude Threshold"
+        app:layout_constraintStart_toStartOf="@+id/seekBarLowAmp"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarLowAmp" />
+
+    <TextView
+        android:id="@+id/textLowerAmpValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="blank"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarLowAmp"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarLowAmp" />
+
+    <SeekBar
+        android:id="@+id/seekBarHiAmp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/seekBarLowAmp"
+        app:layout_constraintTop_toBottomOf="@+id/textLowerAmp" />
+
+    <TextView
+        android:id="@+id/textHiAmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Higher Amplitude Threshold"
+        app:layout_constraintStart_toStartOf="@+id/seekBarHiAmp"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarHiAmp" />
+
+    <TextView
+        android:id="@+id/textHiAmpValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="blank"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarHiAmp"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarHiAmp" />
+
+    <SeekBar
+        android:id="@+id/seekBarMs"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/textHiAmp"
+        app:layout_constraintTop_toBottomOf="@+id/textHiAmp" />
+
+    <TextView
+        android:id="@+id/textMs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample every..."
+        app:layout_constraintStart_toStartOf="@+id/seekBarMs"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarMs" />
+
+    <TextView
+        android:id="@+id/textMsValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="blank"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarMs"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarMs" />
 </androidx.constraintlayout.widget.ConstraintLayout>

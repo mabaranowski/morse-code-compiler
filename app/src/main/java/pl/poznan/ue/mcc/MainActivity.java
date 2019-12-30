@@ -2,15 +2,18 @@ package pl.poznan.ue.mcc;
 
 import android.Manifest;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -25,10 +28,19 @@ public class MainActivity extends AppCompatActivity {
     private static Context context;
     private Recorder recorder = new Recorder();
 
+    //Main
     static TextView textArea;
     private EditText phoneNumberInput;
     private Button recordButton;
     private Button sendButton;
+
+    //Settings
+    private SeekBar seekBarLowAmp;
+    private TextView seekBarLowAmpValue;
+    private SeekBar seekBarHiAmp;
+    private TextView seekBarHiAmpValue;
+    private SeekBar seekMs;
+    private TextView seekMsValue;
 
     String finalTextFromRecorder;
 
@@ -39,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         findById();
+        initializeSettings();
         context = getApplicationContext();
         recordButton.setOnClickListener(changeRecordingState);
         sendButton.setOnClickListener(sendText);
@@ -53,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
             recorder.onRecord(mStartRecording);
             if (mStartRecording) {
                 recordButton.setText("Stop recording");
+                seekBarLowAmp.setEnabled(false);
+                seekBarHiAmp.setEnabled(false);
+                seekMs.setEnabled(false);
             } else {
                 recordButton.setText("Start recording");
                 Converter converter = new Converter();
@@ -61,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 finalTextFromRecorder = converter.convert(recorder.getQuinaryExpression());
                 sendButton.setVisibility(View.VISIBLE);
                 phoneNumberInput.setVisibility(View.VISIBLE);
+                seekBarLowAmp.setEnabled(true);
+                seekBarHiAmp.setEnabled(true);
+                seekMs.setEnabled(true);
+
                 Log.e(LOG_TAG, finalTextFromRecorder);
             }
             mStartRecording = !mStartRecording;
@@ -101,6 +121,86 @@ public class MainActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.sendButton);
         textArea = findViewById(R.id.textArea);
         phoneNumberInput = findViewById(R.id.phoneNumberInput);
+    }
+
+    private void initializeSettings(){
+        seekBarLowAmp = findViewById(R.id.seekBarLowAmp);
+        seekBarLowAmpValue = findViewById(R.id.textLowerAmpValue);
+        seekBarLowAmp.setMin(100);
+        seekBarLowAmp.setMax(1000);
+        seekBarLowAmp.setProgress(500);
+        seekBarLowAmpValue.setText(Integer.toString(seekBarLowAmp.getProgress()));
+
+        seekBarLowAmp.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        seekBarLowAmpValue.setText(Integer.toString(progress));
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        recorder.setLAmpTh(seekBar.getProgress());
+                    }
+                }
+        );
+
+        seekBarHiAmp = findViewById(R.id.seekBarHiAmp);
+        seekBarHiAmpValue = findViewById(R.id.textHiAmpValue);
+        seekBarHiAmp.setMin(1001);
+        seekBarHiAmp.setMax(4000);
+        seekBarHiAmp.setProgress(2000);
+        seekBarHiAmpValue.setText(Integer.toString(seekBarHiAmp.getProgress()));
+
+        seekBarHiAmp.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        seekBarHiAmpValue.setText(Integer.toString(progress));
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        recorder.setHrAmpTh(seekBar.getProgress());
+                    }
+                }
+        );
+
+        seekMs = findViewById(R.id.seekBarMs);
+        seekMsValue = findViewById(R.id.textMsValue);
+        seekMs.setMin(5);
+        seekMs.setMax(1000);
+        seekMs.setProgress(100);
+        seekMsValue.setText(Integer.toString(seekMs.getProgress())+" ms");
+
+        seekMs.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        seekMsValue.setText(progress + " ms");
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        recorder.setSamplMs(seekBar.getProgress());
+                    }
+                }
+        );
     }
 
     public static Context getGlobalContext() {
