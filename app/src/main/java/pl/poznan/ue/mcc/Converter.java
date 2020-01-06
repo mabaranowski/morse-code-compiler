@@ -31,14 +31,17 @@ public class Converter {
         for (String word: words) {
             List<String> letters = splitBy(word, LETTER_SEP);
             for (String letter: letters) {
-                if(dictionaryMap.containsKey(letter)) {
+                if (dictionaryMap.containsKey(letter)) {
                     sb.append(dictionaryMap.get(letter));
+                } else {
+                    Log.e(LOG_TAG, "NOT_FOUND");
                 }
             }
             sb.append(SPACE);
         }
 
         String result = sb.toString();
+        result = formatOutput(result);
         Log.e(LOG_TAG, result);
         return result;
     }
@@ -49,5 +52,11 @@ public class Converter {
         return  list;
     }
 
+    private String formatOutput(String result) {
+        result = result.trim();
+        result = result.toLowerCase();
+        result = result.substring(0, 1).toUpperCase() + result.substring(1);
+        return result;
+    }
 
 }

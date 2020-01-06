@@ -63,15 +63,17 @@ public class RecordRunnable implements Runnable {
                 sb.append(DASH);
                 Log.e(LOG_TAG, amp + "");
             } else {
-                spaceCounter++;
-                if (spaceCounter > 3 && spaceCounter < 9) {
-                    isSignal = true;
-                } else if (spaceCounter >= 9 && spaceCounter < 21) {
-                    isSignal = false;
-                    isLetter = true;
-                } else if (spaceCounter >= 21) {
-                    isLetter = false;
-                    isWord = true;
+                if(sb.length() > 0) {
+                    spaceCounter++;
+                    if (spaceCounter > 3 && spaceCounter < 9) {
+                        isSignal = true;
+                    } else if (spaceCounter >= 9 && spaceCounter < 21) {
+                        isSignal = false;
+                        isLetter = true;
+                    } else if (spaceCounter >= 21) {
+                        isLetter = false;
+                        isWord = true;
+                    }
                 }
             }
 
