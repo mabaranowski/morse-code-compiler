@@ -1,2 +1,2 @@
 # morse-code-compiler
-Android application
+Android app that converts microphone gathered morse code input into text message.
