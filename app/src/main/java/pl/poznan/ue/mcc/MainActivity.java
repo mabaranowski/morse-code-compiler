@@ -2,7 +2,7 @@ package pl.poznan.ue.mcc;
 
 import android.Manifest;
 import android.content.Context;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -13,10 +13,23 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView seekBarHiAmpValue;
     private SeekBar seekMs;
     private TextView seekMsValue;
+    SharedPreferences set;
+    SharedPreferences.Editor editor;
+    private Button reset;
 
     String finalTextFromRecorder;
 
@@ -49,13 +65,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
+        set = getSharedPreferences("USER",MODE_PRIVATE);
+        editor = set.edit();
+
         setContentView(R.layout.activity_main);
         findById();
         initializeSettings();
         context = getApplicationContext();
         recordButton.setOnClickListener(changeRecordingState);
         sendButton.setOnClickListener(sendText);
-
+        reset.setOnClickListener(ResToDefault);
     }
 
     private View.OnClickListener changeRecordingState = new View.OnClickListener() {
@@ -116,18 +135,46 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener ResToDefault = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int val = 400;
+            seekBarLowAmp.setProgress(val);
+            recorder.setLAmpTh(val);
+            editor.putInt("LOW",val);
+            val=999;
+            seekBarHiAmp.setProgress(val);
+            recorder.setHrAmpTh(val);
+            editor.putInt("HI",val);
+            val=95;
+            seekMs.setProgress(val);
+            recorder.setSamplMs(val);
+            editor.putInt("MS",val);
+            editor.commit();
+        }
+    };
+
     private void findById() {
         recordButton = findViewById(R.id.recordButton);
         sendButton = findViewById(R.id.sendButton);
         textArea = findViewById(R.id.textArea);
         phoneNumberInput = findViewById(R.id.phoneNumberInput);
-    }
 
-    private void initializeSettings(){
         seekBarLowAmp = findViewById(R.id.seekBarLowAmp);
         seekBarLowAmpValue = findViewById(R.id.textLowerAmpValue);
-        seekBarLowAmp.setMax(9000);
-        seekBarLowAmp.setProgress(400);
+        seekBarHiAmp = findViewById(R.id.seekBarHiAmp);
+        seekBarHiAmpValue = findViewById(R.id.textHiAmpValue);
+        seekMs = findViewById(R.id.seekBarMs);
+        seekMsValue = findViewById(R.id.textMsValue);
+        reset = findViewById(R.id.buttonSettingDefault);
+    }
+
+
+
+    private void initializeSettings(){
+        seekBarLowAmp.setMax(900);
+        //seekBarLowAmp.setProgress(400);
+        seekBarLowAmp.setProgress(set.getInt("LOW",400));
         seekBarLowAmpValue.setText(Integer.toString(seekBarLowAmp.getProgress()+100));
 
         seekBarLowAmp.setOnSeekBarChangeListener(
@@ -145,15 +192,17 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        recorder.setLAmpTh(seekBar.getProgress()+100);
+                        int val = seekBar.getProgress()+100;
+                        recorder.setLAmpTh(val);
+                        editor.putInt("LOW",val);
+                        editor.commit();
                     }
                 }
         );
 
-        seekBarHiAmp = findViewById(R.id.seekBarHiAmp);
-        seekBarHiAmpValue = findViewById(R.id.textHiAmpValue);
         seekBarHiAmp.setMax(2999);
-        seekBarHiAmp.setProgress(999);
+        //seekBarHiAmp.setProgress(999);
+        seekBarHiAmp.setProgress(set.getInt("HI",999));
         seekBarHiAmpValue.setText(Integer.toString(seekBarHiAmp.getProgress()+1001));
 
         seekBarHiAmp.setOnSeekBarChangeListener(
@@ -171,16 +220,18 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        recorder.setHrAmpTh(seekBar.getProgress()+1001);
+                        int val = seekBar.getProgress()+1001;
+                        recorder.setHrAmpTh(val);
+                        editor.putInt("HI",val);
+                        editor.commit();
                     }
                 }
         );
 
-        seekMs = findViewById(R.id.seekBarMs);
-        seekMsValue = findViewById(R.id.textMsValue);
         seekMs.setMax(995);
-        seekMs.setProgress(95);
-        seekMsValue.setText(Integer.toString(seekMs.getProgress()+5)+" ms");
+        //seekMs.setProgress(95);
+        seekMs.setProgress(set.getInt("MS",95));
+        seekMsValue.setText(seekMs.getProgress()+5+" ms");
 
         seekMs.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
@@ -197,7 +248,10 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        recorder.setSamplMs(seekBar.getProgress()+5);
+                        int val = seekBar.getProgress()+5;
+                        recorder.setSamplMs(val);
+                        editor.putInt("MS",val);
+                        editor.commit();
                     }
                 }
         );

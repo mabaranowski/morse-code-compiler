@@ -122,4 +122,13 @@
         android:text="blank"
         app:layout_constraintEnd_toEndOf="@+id/seekBarMs"
         app:layout_constraintTop_toBottomOf="@+id/seekBarMs" />
+
+    <Button
+        android:id="@+id/buttonSettingDefault"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:text="Default"
+        app:layout_constraintBottom_toBottomOf="@+id/textMs"
+        app:layout_constraintEnd_toStartOf="@+id/textLowerAmp"
+        app:layout_constraintTop_toTopOf="@+id/seekBarLowAmp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
