@@ -56,7 +56,7 @@ public class Converter {
         if(result.length() > 1) {
             result = result.trim();
             result = result.toLowerCase();
-            result = result.substring(0, 1).toUpperCase() + result.substring(1);
+//            result = result.substring(0, 1).toUpperCase() + result.substring(1);
         }
         return result;
     }
