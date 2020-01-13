@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
+import android.view.textservice.TextServicesManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private static Context context;
     private Recorder recorder = new Recorder();
 
+    static TextServicesManager tsm;
+
     //Main
     static TextView textArea;
     private EditText phoneNumberInput;
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         set = getSharedPreferences("USER",MODE_PRIVATE);
         editor = set.edit();
 
+        tsm = (TextServicesManager) getSystemService(
+                Context.TEXT_SERVICES_MANAGER_SERVICE);
+
         setContentView(R.layout.activity_main);
         findById();
         initializeSettings();
@@ -90,10 +96,11 @@ public class MainActivity extends AppCompatActivity {
                 seekMs.setEnabled(false);
             } else {
                 recordButton.setText("Start recording");
-                Converter converter = new Converter();
+//                Converter converter = new Converter();
 
                 //Convert Test
-                finalTextFromRecorder = converter.convert(recorder.getQuinaryExpression());
+//                finalTextFromRecorder = converter.convert(recorder.getQuinaryExpression());
+                finalTextFromRecorder = recorder.getQuinaryExpression();
                 sendButton.setVisibility(View.VISIBLE);
                 phoneNumberInput.setVisibility(View.VISIBLE);
                 seekBarLowAmp.setEnabled(true);
