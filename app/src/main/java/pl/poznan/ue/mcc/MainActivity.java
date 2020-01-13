@@ -2,8 +2,12 @@ package pl.poznan.ue.mcc;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText phoneNumberInput;
     private Button recordButton;
     private Button sendButton;
+    private Button contactsButton;
 
     //Settings
     private SeekBar seekBarLowAmp;
@@ -81,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         recordButton.setOnClickListener(changeRecordingState);
         sendButton.setOnClickListener(sendText);
         reset.setOnClickListener(ResToDefault);
+        contactsButton.setOnClickListener(contactsButt);
     }
 
     private View.OnClickListener changeRecordingState = new View.OnClickListener() {
@@ -103,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 finalTextFromRecorder = recorder.getQuinaryExpression();
                 sendButton.setVisibility(View.VISIBLE);
                 phoneNumberInput.setVisibility(View.VISIBLE);
+                contactsButton.setVisibility(View.VISIBLE);
                 seekBarLowAmp.setEnabled(true);
                 seekBarHiAmp.setEnabled(true);
                 seekMs.setEnabled(true);
@@ -113,6 +121,31 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Uri contactData = data.getData();
+        Cursor c = getContentResolver().query(contactData, null, null, null, null);
+        if (c.moveToFirst()) {
+            int phoneIndex = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            String num = c.getString(phoneIndex);
+            //Toast.makeText(MainActivity.this, "Number=" + num, Toast.LENGTH_LONG).show();
+            num = num.replaceAll("\\s", "");
+            num = num.replaceAll("[+]", "");
+            num = num.replaceAll("[-]", "");
+            num = num.replaceAll("[(]", "");
+            num = num.replaceAll("[)]", "");
+            phoneNumberInput.setText(num);
+        }
+    }
+
+    private View.OnClickListener contactsButt = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            pickContact.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+            startActivityForResult(pickContact, 1);
+        }
+    };
 
     private View.OnClickListener sendText = new View.OnClickListener() {
         @Override
@@ -166,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.sendButton);
         textArea = findViewById(R.id.textArea);
         phoneNumberInput = findViewById(R.id.phoneNumberInput);
+
+        contactsButton = findViewById(R.id.buttonContacts);
 
         seekBarLowAmp = findViewById(R.id.seekBarLowAmp);
         seekBarLowAmpValue = findViewById(R.id.textLowerAmpValue);
