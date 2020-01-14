@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
-        set = getSharedPreferences("USER",MODE_PRIVATE);
+        set = getSharedPreferences("USER", MODE_PRIVATE);
         editor = set.edit();
 
         tsm = (TextServicesManager) getSystemService(
@@ -152,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             String phoneNumber = phoneNumberInput.getText().toString();
             Pattern phoneNumberPattern = Pattern.compile("\\d{9}");
+            Pattern phoneNumberWithPrefixPattern = Pattern.compile("\\d{11}");
 
-            if (phoneNumberPattern.matcher(phoneNumber).matches() && !finalTextFromRecorder.equals("")) {
+
+            if ((phoneNumberPattern.matcher(phoneNumber).matches() || phoneNumberWithPrefixPattern.matcher(phoneNumber).matches()) && !finalTextFromRecorder.equals("")) {
                 try {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phoneNumber, null, finalTextFromRecorder, null, null);
@@ -181,15 +183,15 @@ public class MainActivity extends AppCompatActivity {
             int val = 400;
             seekBarLowAmp.setProgress(val);
             recorder.setLAmpTh(val);
-            editor.putInt("LOW",val);
-            val=999;
+            editor.putInt("LOW", val);
+            val = 999;
             seekBarHiAmp.setProgress(val);
             recorder.setHrAmpTh(val);
-            editor.putInt("HI",val);
-            val=95;
+            editor.putInt("HI", val);
+            val = 95;
             seekMs.setProgress(val);
             recorder.setSamplMs(val);
-            editor.putInt("MS",val);
+            editor.putInt("MS", val);
             editor.commit();
         }
     };
@@ -212,18 +214,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private void initializeSettings(){
+    private void initializeSettings() {
         seekBarLowAmp.setMax(900);
         //seekBarLowAmp.setProgress(400);
-        seekBarLowAmp.setProgress(set.getInt("LOW",400));
-        seekBarLowAmpValue.setText(Integer.toString(seekBarLowAmp.getProgress()+100));
+        seekBarLowAmp.setProgress(set.getInt("LOW", 400));
+        seekBarLowAmpValue.setText(Integer.toString(seekBarLowAmp.getProgress() + 100));
 
         seekBarLowAmp.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress=progress+100;
+                        progress = progress + 100;
                         seekBarLowAmpValue.setText(Integer.toString(progress));
                     }
 
@@ -234,9 +235,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        int val = seekBar.getProgress()+100;
+                        int val = seekBar.getProgress() + 100;
                         recorder.setLAmpTh(val);
-                        editor.putInt("LOW",val);
+                        editor.putInt("LOW", val);
                         editor.commit();
                     }
                 }
@@ -244,14 +245,14 @@ public class MainActivity extends AppCompatActivity {
 
         seekBarHiAmp.setMax(2999);
         //seekBarHiAmp.setProgress(999);
-        seekBarHiAmp.setProgress(set.getInt("HI",999));
-        seekBarHiAmpValue.setText(Integer.toString(seekBarHiAmp.getProgress()+1001));
+        seekBarHiAmp.setProgress(set.getInt("HI", 999));
+        seekBarHiAmpValue.setText(Integer.toString(seekBarHiAmp.getProgress() + 1001));
 
         seekBarHiAmp.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress=progress+1001;
+                        progress = progress + 1001;
                         seekBarHiAmpValue.setText(Integer.toString(progress));
                     }
 
@@ -262,9 +263,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        int val = seekBar.getProgress()+1001;
+                        int val = seekBar.getProgress() + 1001;
                         recorder.setHrAmpTh(val);
-                        editor.putInt("HI",val);
+                        editor.putInt("HI", val);
                         editor.commit();
                     }
                 }
@@ -272,8 +273,8 @@ public class MainActivity extends AppCompatActivity {
 
         seekMs.setMax(995);
         //seekMs.setProgress(95);
-        seekMs.setProgress(set.getInt("MS",95));
-        seekMsValue.setText(seekMs.getProgress()+5+" ms");
+        seekMs.setProgress(set.getInt("MS", 95));
+        seekMsValue.setText(seekMs.getProgress() + 5 + " ms");
 
         seekMs.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
@@ -290,9 +291,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        int val = seekBar.getProgress()+5;
+                        int val = seekBar.getProgress() + 5;
                         recorder.setSamplMs(val);
-                        editor.putInt("MS",val);
+                        editor.putInt("MS", val);
                         editor.commit();
                     }
                 }
